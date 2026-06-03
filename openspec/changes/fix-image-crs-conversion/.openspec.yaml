@@ -1,0 +1,5 @@
+change:
+  name: fix-image-crs-conversion
+  description: 修复影像图层 extent 坐标系转换问题，支持任意 CRS 到 EPSG:4326 的自动转换
+  type: bugfix
+  severity: high

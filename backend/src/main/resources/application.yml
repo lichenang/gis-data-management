@@ -1,0 +1,179 @@
+# GIS Platform 配置文件
+# 使用占位符读取外部配置，支持环境变量覆盖
+
+server:
+  # 服务器配置
+  port: ${SERVER_PORT:8088}
+  servlet:
+    context-path: /
+
+spring:
+  # 应用名称
+  application:
+    name: gis-platform
+  # 数据源配置 (PostgreSQL + PostGIS)
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${GIS_DB_HOST:localhost}:${GIS_DB_PORT:5432}/${GIS_DB_NAME:gisdb}
+    username: ${GIS_DB_USERNAME:postgres}
+    password: ${GIS_DB_PASSWORD:}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      pool-name: GIS-HikariCP
+
+  # Flyway 数据库迁移配置
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    sql-migration-prefix: V
+    sql-migration-separator: __
+    sql-migration-suffixes: .sql
+    validate-on-migrate: true
+    # 禁用 Flyway 占位符替换，避免与 Spring Boot 的 ${} 冲突
+    placeholder-replacement: false
+
+  # Jackson 配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    serialization:
+      write-dates-as-timestamps: false
+      fail-on-empty-beans: false
+
+  # SpringDoc/OpenAPI 配置
+  doc:
+    api:
+      title: GIS Platform API
+      description: 地理信息数据管理平台接口文档
+      version: 1.0.0
+      contact:
+        name: GIS Platform Team
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+
+
+# GIS 平台自定义配置
+gis:
+  # 数据库配置 (PostGIS 专有配置)
+  datasource:
+    # PostGIS schema，用于存储空间数据
+    schema: public
+    # 是否自动创建空间表
+    auto-create-tables: false
+
+# MinIO 对象存储配置
+minio:
+  # MinIO 服务地址
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  # 存储桶名称
+  bucket: ${MINIO_BUCKET:gis-platform}
+  # 影像存储桶
+  bucket-raster: ${MINIO_BUCKET_RASTER:gis-raster}
+  # Access Key
+  accessKey: ${MINIO_ACCESS_KEY:}
+  # Secret Key
+  secretKey: ${MINIO_SECRET_KEY:}
+  # 连接超时时间（毫秒）
+  connection-timeout: 10000
+  # 读写超时时间（毫秒）
+  write-timeout: 60000
+  # 读取超时时间（毫秒）
+  read-timeout: 60000
+
+# GeoServer 配置
+geoserver:
+  # GeoServer REST API 地址
+  url: ${GEOSERVER_URL:http://localhost:8080/geoserver}
+  # 用户名
+  username: ${GEOSERVER_USERNAME:admin}
+  # 密码
+  password: ${GEOSERVER_PASSWORD:}
+  # 默认工作区
+  workspace: ${GEOSERVER_WORKSPACE:gisplatform}
+  # 连接超时时间（毫秒）
+  connect-timeout: 30000
+  # 读取超时时间（毫秒）
+  read-timeout: 60000
+  # 切片最小 zoom 级别
+  tiling-min-zoom: 12
+  # 切片最大 zoom 级别
+  tiling-max-zoom: 18
+  # GeoServer data_dir 物理路径（用于直接读取 GWC 切片缓存）
+  data-dir: ${GEOSERVER_DATA_DIR:D:\Program Files\geoserver-2.28.3-bin\data_dir}
+
+# 切片包下载配置
+tile-package:
+  # 最大瓦片数量（超过此数量拒绝打包，防止 OOM）
+  max-tiles: 100000
+  # 默认结束缩放级别
+  default-zoom-stop: 14
+
+# JWT 配置
+jwt:
+  # JWT 密钥（建议使用强密钥，生产环境请更改）
+  secret: ${JWT_SECRET:gis-platform-secret-key-must-be-at-least-256-bits-long}
+  # Access Token 过期时间（分钟）
+  access-token-expire: 15
+  # Refresh Token 过期时间（天）
+  refresh-token-expire: 7
+  # Token 前缀
+  token-prefix: Bearer
+  # 请求头名称
+  header-name: Authorization
+
+# 授权配置
+license:
+  # 授权服务器地址（用于在线激活）
+  server-url: ${LICENSE_SERVER_URL:}
+  # 授权文件存储路径
+  license-file-path: ${LICENSE_FILE_PATH:}
+  # 即将过期提醒天数
+  expire-warning-days: 7
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  # 配置扫描通用枚举
+  type-enums-package: com.gisplatform.common.enums
+  configuration:
+    # 驼峰命名规则
+    map-underscore-to-camel-case: true
+    # 开启日志输出
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 全局配置：主键类型为自增
+    id-type: auto
+  global-config:
+    db-config:
+      # 逻辑删除字段（软删除）
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# Spring Boot Actuator 配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.gisplatform: DEBUG
+    org.springframework.security: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

@@ -1,0 +1,20 @@
+---
+name: fix-crs-transform-axis-swap
+description: 修复 CrsTransformUtil 坐标轴交换问题
+apply:
+  requires:
+    - tasks
+artifacts:
+  - id: proposal
+    status: done
+    path: proposal.md
+  - id: design
+    status: done
+    path: design.md
+    dependencies:
+      - proposal
+  - id: tasks
+    status: done
+    path: tasks.md
+    dependencies:
+      - design

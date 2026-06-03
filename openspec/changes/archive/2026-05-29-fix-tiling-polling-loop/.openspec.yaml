@@ -1,0 +1,4 @@
+name: fix-tiling-polling-loop
+schema: spec-driven
+description: 修复切片任务完成后轮询不停止的问题，当进度达到100%时自动更新状态并退出循环
+created: 2026-05-29

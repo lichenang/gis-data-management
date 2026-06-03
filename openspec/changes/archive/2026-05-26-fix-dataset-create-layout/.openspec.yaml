@@ -1,0 +1,9 @@
+name: fix-dataset-create-layout
+description: 重新设计数据集创建页面，采用单页表单+文件上传合并布局
+changes:
+  - type: fix
+    area: frontend
+    priority: high
+status: in_progress
+created: 2026-05-26
+owner: opencode

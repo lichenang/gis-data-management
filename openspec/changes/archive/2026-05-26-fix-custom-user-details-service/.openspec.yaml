@@ -1,0 +1,4 @@
+name: fix-custom-user-details-service
+schema: spec-driven
+description: 重写 CustomUserDetailsService，修复重复方法和逻辑错误
+created: 2026-05-26

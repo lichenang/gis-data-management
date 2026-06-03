@@ -1,0 +1,5 @@
+change:
+  name: fix-global-jsonb-handler
+  description: 创建自定义 JsonbTypeHandler，修复 PostgreSQL JSONB 类型处理问题
+  type: fix
+  severity: high

@@ -1,0 +1,4 @@
+name: restructure-dataset-menu
+schema: spec-driven
+description: 重构左侧菜单，将数据集管理改为二级菜单结构
+created: 2026-05-29

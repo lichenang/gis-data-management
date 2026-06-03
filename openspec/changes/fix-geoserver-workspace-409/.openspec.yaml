@@ -1,0 +1,5 @@
+change:
+  name: fix-geoserver-workspace-409
+  description: 修复 GeoServer 发布时因 workspace 已存在导致 409 Conflict 的问题
+  type: fix
+  severity: high

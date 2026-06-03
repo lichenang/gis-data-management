@@ -1,0 +1,4 @@
+name: add-user-list
+schema: spec-driven
+description: 实现用户管理列表页面，包含后端分页查询接口和前端展示
+created: 2026-05-25

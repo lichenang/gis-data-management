@@ -1,0 +1,5 @@
+change:
+  name: fix-map-zoom-timing
+  description: 修复地图自动缩放未生效的问题，使用 setTimeout 延迟调用 fit
+  type: bugfix
+  severity: medium

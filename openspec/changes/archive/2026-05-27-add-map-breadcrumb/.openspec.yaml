@@ -1,0 +1,5 @@
+change:
+  name: add-map-breadcrumb
+  description: 为地图查看页面添加面包屑导航条，支持快速返回首页
+  type: enhancement
+  severity: low

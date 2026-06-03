@@ -1,0 +1,4 @@
+name: fix-tile-status-reset
+schema: spec-driven
+description: 修复 TileSeedService.triggerSeed() 中状态被错误重置的 bug
+created: 2026-05-29

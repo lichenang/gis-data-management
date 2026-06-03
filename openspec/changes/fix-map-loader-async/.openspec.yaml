@@ -1,0 +1,5 @@
+change:
+  name: fix-map-loader-async
+  description: 修复 loader 使用 async/await 导致要素数为 0 的问题，改为 Promise.then()
+  type: bugfix
+  severity: high

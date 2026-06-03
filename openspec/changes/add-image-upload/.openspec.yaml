@@ -1,0 +1,5 @@
+change:
+  name: add-image-upload
+  description: 实现影像数据上传和元数据自动解析功能
+  type: feature
+  severity: medium

@@ -1,0 +1,4 @@
+name: fix-security-permit-cors
+schema: spec-driven
+description: 修复 SecurityConfig 中 CORS 预检请求被拒绝的 403 问题
+created: 2026-05-26

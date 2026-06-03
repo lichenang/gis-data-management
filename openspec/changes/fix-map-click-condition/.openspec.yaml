@@ -1,0 +1,5 @@
+change:
+  name: fix-map-click-condition
+  description: 修复 MapContainer.vue 中 Click 变量未定义导致地图页面异常的 bug
+  type: bugfix
+  severity: critical

@@ -1,0 +1,21 @@
+name: fix-extent-lonlat-order
+status: in_progress
+created: 2026-05-29
+description: 修复后端 getImageWmsInfo() 返回的 extent 经纬度顺序错误问题
+artifacts:
+  - id: proposal
+    status: done
+    path: proposal.md
+  - id: design
+    status: done
+    path: design.md
+    dependsOn:
+      - proposal
+  - id: tasks
+    status: done
+    path: tasks.md
+    dependsOn:
+      - design
+apply:
+  requires:
+    - tasks

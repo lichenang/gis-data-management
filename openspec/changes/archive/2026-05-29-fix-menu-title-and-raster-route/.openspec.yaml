@@ -1,0 +1,4 @@
+name: fix-menu-title-and-raster-route
+schema: spec-driven
+description: 修复菜单重构后的两个UI问题：页面标题动态化 和 /datasets/raster路由重定向
+created: 2026-05-29

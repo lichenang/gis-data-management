@@ -1,0 +1,20 @@
+---
+name: fix-extent-xy-order
+description: 修复 ImageServiceImpl.java 中 extent 坐标轴顺序错误
+apply:
+  requires:
+    - tasks
+artifacts:
+  - id: proposal
+    status: done
+    path: proposal.md
+  - id: design
+    status: done
+    path: design.md
+    dependencies:
+      - proposal
+  - id: tasks
+    status: done
+    path: tasks.md
+    dependencies:
+      - design

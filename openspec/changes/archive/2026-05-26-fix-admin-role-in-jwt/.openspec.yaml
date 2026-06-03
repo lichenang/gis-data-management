@@ -1,0 +1,4 @@
+name: fix-admin-role-in-jwt
+schema: spec-driven
+description: 修复 JWT 中 admin 角色显示为 USER 的问题，修复三处硬编码
+created: 2026-05-26

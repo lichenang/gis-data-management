@@ -1,0 +1,5 @@
+change:
+  name: fix-image-crs-return-value
+  description: 修复后端 getImageWmsInfo() 错误返回 CRS 为 EPSG:4326，应返回原始 CRS（如 EPSG:3857）
+  type: fix
+  severity: high

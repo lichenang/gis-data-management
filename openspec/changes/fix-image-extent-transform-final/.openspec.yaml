@@ -1,0 +1,5 @@
+change:
+  name: fix-image-extent-transform-final
+  description: 彻底修复影像图层 extent 转换问题 - 后端确保返回标准 CRS，前端增加容错判断
+  type: fix
+  severity: high

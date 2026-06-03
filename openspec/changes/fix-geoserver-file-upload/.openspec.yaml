@@ -1,0 +1,5 @@
+change:
+  name: fix-geoserver-file-upload
+  description: 彻底修复 GeoServer 发布问题，改用二进制文件直传（file.geotiff）替代 external URL 引用
+  type: fix
+  severity: critical

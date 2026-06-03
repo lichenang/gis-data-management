@@ -1,0 +1,5 @@
+change:
+  name: fix-image-projection-mismatch
+  description: 修复影像图层坐标系不匹配问题 - 前端 TileWMS 添加 projection，后端确保 extent 正确转换
+  type: fix
+  severity: high

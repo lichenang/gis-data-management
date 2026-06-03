@@ -1,0 +1,5 @@
+change:
+  name: polish-map-ui
+  description: 优化地图页面布局和矢量图层样式，提升用户体验
+  type: enhancement
+  severity: medium

@@ -1,0 +1,5 @@
+change:
+  name: fix-geojson-geometry-type
+  description: 修复地图 GeoJSON 接口中 geometry.type 被硬编码为 "Geometry" 导致 OpenLayers 无法渲染的问题
+  type: bugfix
+  severity: critical

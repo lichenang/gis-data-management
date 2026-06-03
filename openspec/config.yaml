@@ -1,0 +1,99 @@
+schema: spec-driven
+
+# 项目上下文 —— AI 在生成所有产物（Spec、Proposal、代码）时都会读取此内容
+context: |
+  # 技术栈
+  - 后端框架：Spring Boot 3.5.x（3.x 系列最后一个大版本，长期稳定支持版本）
+  - Java 版本：Java 17（最低要求，LTS 版本）
+  - 构建工具：Maven 3.9+
+  - ORM 框架：MyBatis-Plus 3.5.x（使用 mybatis-plus-spring-boot3-starter）
+  - 数据库：PostgreSQL 16 + PostGIS 3.4 扩展
+  - 对象存储：MinIO（S3 兼容，Java SDK 8.6.x）
+  - 地图服务器：GeoServer 2.26.x（通过 REST API 管理，Java 客户端 geoserver-manager）
+  - 切片缓存：GeoWebCache（集成在 GeoServer 中）+ Nginx 静态文件服务
+  - 认证与授权：Spring Security + JWT（jjwt 0.12.x）+ RBAC 权限模型
+  - 前端框架：Vue 3 + Vite + TypeScript + Element Plus
+  - 地图可视化：OpenLayers 10.x（npm 包名 ol）
+  - 空间计算库：GeoTools 32.x + JTS 1.19.x（Java Topology Suite）
+  - API 文档：SpringDoc OpenAPI 2.x + Knife4j 4.x（Swagger 增强 UI）
+
+  # 配置管理原则（安全第一）
+  - 所有外部服务的连接参数均通过 application.yml 读取
+  - 支持环境变量覆盖（${DB_HOST:localhost} 格式），开发环境使用 .env 文件
+  - 严禁在代码、配置文件、Spec 文档中硬编码任何密码、AccessKey、SecretKey
+  - 敏感信息通过 Spring Boot 的 @ConfigurationProperties 绑定
+  - .env 文件必须加入 .gitignore，不提交到 Git
+
+  # 配置前缀命名约定
+  - 数据库连接：gis.datasource
+  - MinIO 对象存储：minio
+  - GeoServer REST API：geoserver
+  - 授权码相关配置：license
+  - JWT 配置：jwt
+
+  # 坐标系约定
+  - 数据库存储坐标系：EPSG:4326（WGS 84 经纬度）
+  - 前端展示坐标系：EPSG:3857（Web Mercator）
+  - 面积/距离计算：根据数据所在区域选择合适的投影坐标系（如 UTM 分带）
+
+  # 数据格式约定
+  - 所有 REST API 统一返回格式：{ "code": number, "message": string, "data": object|null }
+  - 空间数据交换格式：GeoJSON（RFC 7946）
+  - 分页响应包含：content（数据列表）、total（总记录数）、page（当前页）、size（每页大小）
+
+  # 代码规范与注释要求（严格）
+  - 包名：com.gisplatform
+  - 实体类命名：表名下划线转驼峰（如 spatial_dataset → SpatialDataset）
+  - Service 层接口与实现分离（接口在 service 包，实现在 service.impl 包）
+  - Controller 层 REST URL 前缀：/api/v1
+  - MyBatis-Plus 使用 LambdaQueryWrapper / LambdaUpdateWrapper，避免字符串字段名
+
+  # 注释规范（强制遵守）
+  - 所有 public 类、接口、方法必须有 Javadoc 注释，描述其职责、参数、返回值及异常
+  - 复杂业务逻辑内部使用单行注释说明关键步骤
+  - 实体类字段使用 @Schema 或 Javadoc 注释说明含义
+  - Controller 方法注释必须包含：接口说明、请求参数、返回数据格式
+  - 配置类注释说明每个配置项的作用
+  - 前端 .vue 文件中的 <script setup> 部分使用 JSDoc 风格注释描述组件 Props、Emits 和关键函数
+  - 前端 API 调用函数（axios 封装）需注释说明请求路径和参数
+  - 注释语言：中文（接口文档和关键说明优先使用中文）
+  - 代码生成后，AI 需检查注释完整性，缺失注释视为未完成
+
+  # 商业授权机制
+  - 系统首次启动进入激活向导，需要授权码或授权文件
+  - 授权码采用 RSA 非对称加密 + AES 对称加密混合方案
+  - 授权信息包含：产品版本、到期时间、最大用户数、功能模块许可、机器指纹
+  - 系统运行时每日校验一次授权状态
+  - 授权到期前 7 天提醒续期
+  - 授权过期后系统进入只读模式（数据可查看，不可编辑）
+
+  # 权限模型
+  - 用户认证：JWT 无状态认证
+  - 角色权限（RBAC）：管理员、数据编辑员、普通用户
+  - 数据权限：数据集级权限（按图层/数据集授权）+ 行级权限（按空间区域授权）
+
+  # 非功能需求
+  - 所有几何列建立 GiST 空间索引
+  - 操作日志自动记录（操作人、时间、类型、目标资源、变更前后快照、IP）
+  - 备份策略：PostgreSQL pg_dump + WAL 归档，MinIO 桶镜像
+  - 健康监控：Spring Boot Actuator + 自定义健康指示器（检查 PostGIS、GeoServer、MinIO 连通性）
+  - 全局异常处理器统一返回 { code, message, data } 格式
+  - 自定义 GeometryTypeHandler 处理 PostGIS geometry 与 JTS 的映射，全局注册到 MybatisPlusConfig
+
+# 项目基本信息
+project: gis-platform
+language: zh-CN
+specs_dir: openspec/specs
+changes_dir: openspec/changes
+
+# 针对特定产物的自定义规则
+rules:
+  proposal:
+    - 提案必须使用中文描述
+    - 每次提案必须包含"非目标"（Non-goals）章节，明确本次变更不做什么
+    - 提案中需要列出受影响的文件清单
+  tasks:
+    - 单个任务的工作量不超过 2 小时
+    - 任务必须可独立验证（有明确的完成标准）
+  specs:
+    - 规范文档必须包含"模块划分"、"数据流设计"、"接口列表"三个章节

@@ -1,0 +1,5 @@
+change:
+  name: fix-map-auto-zoom
+  description: 修复地图加载矢量图层后不自动缩放到数据范围的问题
+  type: feature
+  severity: medium

@@ -1,0 +1,5 @@
+change:
+  name: fix-map-full-height
+  description: 修复加面包屑后地图高度不足的问题，确保地图占满视口
+  type: bugfix
+  severity: high

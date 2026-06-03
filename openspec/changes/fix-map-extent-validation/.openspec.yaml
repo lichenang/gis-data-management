@@ -1,0 +1,5 @@
+change:
+  name: fix-map-extent-validation
+  description: 修复地图自动缩放失败的问题，完善 extent 边界检查，处理空数据和 Infinity 情况
+  type: bugfix
+  severity: medium

@@ -1,0 +1,4 @@
+name: add-dataset-management
+schema: spec-driven
+description: 实现数据集管理模块（后端CRUD + 前端页面）
+created: 2026-05-26

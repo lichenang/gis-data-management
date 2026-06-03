@@ -1,0 +1,5 @@
+change:
+  name: fix-image-extent-and-zoom
+  description: 修复影像图层加载后地图不自动缩放到数据区域的问题
+  type: bugfix
+  severity: high

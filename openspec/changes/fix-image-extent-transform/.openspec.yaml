@@ -1,0 +1,5 @@
+change:
+  name: fix-image-extent-transform
+  description: 彻底修复影像图层 extent 转换问题，前端需要将原始 CRS 的 extent 转换为视图 CRS 后再 fit
+  type: fix
+  severity: high

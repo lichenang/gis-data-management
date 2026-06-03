@@ -1,0 +1,4 @@
+name: fix-admin-password-hash
+schema: spec-driven
+description: 修正数据库初始化脚本中 admin 用户的密码哈希，确保与明文 admin123 匹配
+created: 2026-05-25

@@ -1,0 +1,4 @@
+name: fix-api-url-duplicate
+schema: spec-driven
+description: 修复前端 API 地址重复拼接 /v1 的问题
+created: 2026-05-25

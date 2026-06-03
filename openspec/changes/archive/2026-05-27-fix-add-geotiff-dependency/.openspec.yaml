@@ -1,0 +1,5 @@
+change:
+  name: fix-add-geotiff-dependency
+  description: 添加缺失的 gt-geotiff 依赖并验证编译通过
+  type: fix
+  severity: high

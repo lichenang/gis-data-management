@@ -1,0 +1,9 @@
+name: fix-created-by-null
+description: 修复数据集导入时 created_by 字段为空的错误
+changes:
+  - type: fix
+    area: backend
+    priority: high
+status: in_progress
+created: 2026-05-26
+owner: opencode

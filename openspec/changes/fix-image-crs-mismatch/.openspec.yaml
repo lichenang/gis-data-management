@@ -1,0 +1,21 @@
+name: fix-image-crs-mismatch
+status: in_progress
+created: 2026-05-29
+description: 修复影像图层 CRS 不匹配问题 - extent 已转换为 EPSG:4326 但 crs 字段仍设为 EPSG:3857
+artifacts:
+  - id: proposal
+    status: done
+    path: proposal.md
+  - id: design
+    status: done
+    path: design.md
+    dependsOn:
+      - proposal
+  - id: tasks
+    status: done
+    path: tasks.md
+    dependsOn:
+      - design
+apply:
+  requires:
+    - tasks

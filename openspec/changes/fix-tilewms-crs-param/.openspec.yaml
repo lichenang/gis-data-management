@@ -1,0 +1,21 @@
+name: fix-tilewms-crs-param
+status: in_progress
+created: 2026-05-29
+description: 修复影像图层在EPSG:4326下不显示的问题 - 调整TileWMS参数
+artifacts:
+  - id: proposal
+    status: ready
+    path: proposal.md
+  - id: design
+    status: pending
+    path: design.md
+    dependsOn:
+      - proposal
+  - id: tasks
+    status: pending
+    path: tasks.md
+    dependsOn:
+      - design
+apply:
+  requires:
+    - tasks

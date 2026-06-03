@@ -1,0 +1,5 @@
+change:
+  name: fix-map-dom-structure
+  description: 修复地图页面 DOM 结构和 flex 布局导致的高度问题
+  type: bugfix
+  severity: high

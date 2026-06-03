@@ -1,0 +1,5 @@
+change:
+  name: fix-map-source-projection
+  description: 修复 VectorSource 缺少 projection 配置导致地图无法自动缩放
+  type: bugfix
+  severity: high

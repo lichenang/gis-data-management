@@ -1,0 +1,4 @@
+name: fix-backend-publish-flow
+schema: spec-driven
+description: 修复影像发布流程的两个关键后端缺陷：GWC缓存层残留 + 切片状态更新滞后
+created: 2026-05-29

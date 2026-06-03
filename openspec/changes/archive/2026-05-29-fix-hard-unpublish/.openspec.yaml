@@ -1,0 +1,4 @@
+name: fix-hard-unpublish
+schema: spec-driven
+description: 彻底修复影像取消发布流程，确保 GeoServer 所有相关组件被完整清理
+created: 2026-05-29

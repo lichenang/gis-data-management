@@ -1,0 +1,4 @@
+name: fix-publish-timeout-and-retile-button
+schema: spec-driven
+description: 修复影像管理页面两个问题：发布接口超时 + 重新切片按钮条件修复
+created: 2026-05-29

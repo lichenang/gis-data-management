@@ -1,0 +1,5 @@
+change:
+  name: fix-add-epsg-dependency
+  description: 添加 gt-epsg-hsql 依赖，修复 GeoTools EPSG 数据库缺失导致的坐标转换错误
+  type: fix
+  severity: high

@@ -1,0 +1,5 @@
+change:
+  name: fix-geojson-double-parse
+  description: 修复 GeoJSON 解析失败，需对 API 响应的 data 字段进行二次 JSON.parse
+  type: bugfix
+  severity: high

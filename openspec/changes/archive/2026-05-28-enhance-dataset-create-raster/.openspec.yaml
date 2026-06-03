@@ -1,0 +1,5 @@
+change:
+  name: enhance-dataset-create-raster
+  description: 在数据集创建对话框中集成影像（GeoTIFF）上传功能，按类型切换上传组件
+  type: feature
+  severity: medium

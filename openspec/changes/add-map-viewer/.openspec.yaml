@@ -1,0 +1,5 @@
+change:
+  name: add-map-viewer
+  description: 实现地图查看模块，包含后端 GeoJSON 导出接口和前端地图可视化组件
+  type: feature
+  severity: high

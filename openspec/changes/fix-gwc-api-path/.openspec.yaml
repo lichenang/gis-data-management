@@ -1,0 +1,4 @@
+name: fix-gwc-api-path
+schema: spec-driven
+description: 修复 GeoServer GWC 切片状态查询 API 路径和 JSON 解析错误
+created: 2026-05-29

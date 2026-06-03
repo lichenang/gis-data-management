@@ -1,0 +1,5 @@
+change:
+  name: fix-srs-epsg-code
+  description: 修复影像上传时 SRS 存储为非标准格式导致 CRS 转换失败的问题
+  type: fix
+  severity: high

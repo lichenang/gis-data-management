@@ -1,0 +1,5 @@
+change:
+  name: fix-jsonb-typehandler-final
+  description: 彻底解决 PostgreSQL JSONB 字段写入类型不匹配问题，使用 PGobject 包装
+  type: fix
+  severity: high

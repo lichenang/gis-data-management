@@ -1,0 +1,4 @@
+name: fix-cors-config
+schema: spec-driven
+description: 修复前端访问后端 API 时的跨域问题
+created: 2026-05-26

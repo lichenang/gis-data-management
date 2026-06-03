@@ -1,0 +1,4 @@
+name: fix-gwc-seed-request-format
+schema: spec-driven
+description: 修复 GeoServer GWC 种子任务触发请求格式不兼容问题
+created: 2026-05-29

@@ -1,0 +1,5 @@
+change:
+  name: fix-map-geojson-auth
+  description: 修复 MapContainer.vue 中 VectorSource 使用 url 方式请求 GeoJSON 导致 403 的问题
+  type: bugfix
+  severity: critical

@@ -1,0 +1,20 @@
+---
+name: restructure-dataset-menu
+description: 重构左侧菜单，将数据集管理改为二级菜单结构
+apply:
+  requires:
+    - tasks
+artifacts:
+  - id: proposal
+    status: done
+    path: proposal.md
+  - id: design
+    status: pending
+    path: design.md
+    dependencies:
+      - proposal
+  - id: tasks
+    status: pending
+    path: tasks.md
+    dependencies:
+      - design

@@ -1,0 +1,4 @@
+name: fix-gwc-seed-api-path
+schema: spec-driven
+description: 修复 GeoServer GWC 种子状态查询 API 路径错误（layers/seed.json 应为 seed/{layer}.json）
+created: 2026-05-29

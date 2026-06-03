@@ -1,0 +1,4 @@
+name: fix-cors-origin-patterns
+schema: spec-driven
+description: 修复 CORS 配置，使用通配符模式允许所有本地开发端口
+created: 2026-05-26

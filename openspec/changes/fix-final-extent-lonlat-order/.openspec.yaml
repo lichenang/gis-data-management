@@ -1,0 +1,21 @@
+name: fix-final-extent-lonlat-order
+status: in_progress
+created: 2026-05-29
+description: 修复影像图层因extent经纬度顺序错误导致无法显示的问题
+artifacts:
+  - id: proposal
+    status: done
+    path: proposal.md
+  - id: design
+    status: done
+    path: design.md
+    dependsOn:
+      - proposal
+  - id: tasks
+    status: done
+    path: tasks.md
+    dependsOn:
+      - design
+apply:
+  requires:
+    - tasks

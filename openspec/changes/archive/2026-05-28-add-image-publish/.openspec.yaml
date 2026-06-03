@@ -1,0 +1,5 @@
+change:
+  name: add-image-publish
+  description: 实现影像数据集发布与 GeoWebCache 切片功能，包括 GeoServer REST API 客户端、异步切片任务、发布接口
+  type: feature
+  severity: high

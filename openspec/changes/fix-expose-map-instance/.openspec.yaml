@@ -1,0 +1,5 @@
+change:
+  name: fix-expose-map-instance
+  description: 暴露地图实例到 window.__map__ 以便调试
+  type: enhancement
+  severity: low

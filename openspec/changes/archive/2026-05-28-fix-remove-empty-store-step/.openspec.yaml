@@ -1,0 +1,5 @@
+change:
+  name: fix-remove-empty-store-step
+  description: 移除 GeoServer 发布流程中多余的空 store 创建步骤（Step 1 POST），仅用 Step 2 PUT 一步完成
+  type: fix
+  severity: high

@@ -1,0 +1,5 @@
+change:
+  name: fix-minio-presigned-url
+  description: 使用 MinIO 预签名 URL 修复 GeoServer 发布失败问题，消除对 geoserver.minio-url 配置的依赖
+  type: fix
+  severity: high

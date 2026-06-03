@@ -1,0 +1,5 @@
+change:
+  name: fix-dataset-publish-auth
+  description: 修复数据集发布/取消发布按钮使用裸 axios 导致请求未携带 JWT Token 的问题
+  type: bugfix
+  severity: critical

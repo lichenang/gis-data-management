@@ -1,0 +1,5 @@
+change:
+  name: fix-dataset-extent-jsonb
+  description: 修复 Dataset 实体 extent 字段写入 PostgreSQL JSONB 类型错误
+  type: fix
+  severity: high

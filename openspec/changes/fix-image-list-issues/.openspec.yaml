@@ -1,0 +1,4 @@
+name: fix-image-list-issues
+schema: spec-driven
+description: 修复影像管理页面两个问题：切片状态轮询更新 + 删除按钮功能修复
+created: 2026-05-29

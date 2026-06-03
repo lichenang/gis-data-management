@@ -1,0 +1,5 @@
+change:
+  name: add-image-layer-to-map
+  description: 在地图查看页面叠加已发布的影像图层，支持 TileWMS/WMTS 加载 GeoServer 影像服务
+  type: feature
+  severity: high
