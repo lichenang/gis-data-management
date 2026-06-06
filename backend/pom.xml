@@ -215,11 +215,13 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>
+            <version>32.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.geotools.jdbc</groupId>
             <artifactId>gt-jdbc-postgis</artifactId>
+            <version>32.0</version>
         </dependency>
 
         <dependency>
@@ -258,6 +260,13 @@
             <version>32.0</version>
         </dependency>
 
+        <!-- CSV 支持 -->
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-csv</artifactId>
+            <version>32.0</version>
+        </dependency>
+
         <!-- okhttp3 for MinIO -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
@@ -269,6 +278,7 @@
         <dependency>
             <groupId>org.locationtech.jts</groupId>
             <artifactId>jts-core</artifactId>
+            <version>1.19.0</version>
         </dependency>
 
         <!-- MinIO SDK -->
@@ -361,6 +371,12 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <jvmArguments>
+                        --add-opens=java.base/java.lang=ALL-UNNAMED
+                        --add-opens=java.base/java.util=ALL-UNNAMED
+                        --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+                        --add-opens=java.base/java.io=ALL-UNNAMED
+                    </jvmArguments>
                 </configuration>
             </plugin>
 

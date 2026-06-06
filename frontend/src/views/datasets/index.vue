@@ -105,6 +105,7 @@
                   <el-dropdown-item v-if="row.type === 'vector'" command="geojson">GeoJSON</el-dropdown-item>
                   <el-dropdown-item v-if="row.type === 'vector'" command="shapefile">Shapefile (ZIP)</el-dropdown-item>
                   <el-dropdown-item v-if="row.type === 'vector'" command="kml">KML</el-dropdown-item>
+                  <el-dropdown-item v-if="row.type === 'vector'" command="csv">CSV</el-dropdown-item>
                   <el-dropdown-item v-if="row.type === 'raster'" command="geotiff">GeoTIFF</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -175,7 +176,7 @@
               :on-change="handleFileChange"
               :on-exceed="handleExceed"
               :on-remove="handleFileRemove"
-              accept=".geojson,.json"
+              accept=".geojson,.json,.shp,.zip,.kml,.kmz,.gml,.gpx,.csv,.wkt,.topojson"
             >
               <el-icon class="el-icon--upload"><UploadFilled /></el-icon>
               <div class="el-upload__text">
@@ -183,7 +184,7 @@
               </div>
               <template #tip>
                 <div class="el-upload__tip">
-                  支持 GeoJSON (.geojson/.json) 格式
+                  支持格式：GeoJSON、Shapefile、KML/KMZ、GML、GPX、CSV、WKT、TopoJSON
                 </div>
               </template>
             </el-upload>
@@ -195,6 +196,31 @@
                   <el-option label="Web墨卡托 (EPSG:3857)" value="EPSG:3857" />
                 </el-select>
               </el-form-item>
+
+              <div v-if="isCrsDetected && parseResult?.srs" class="crs-detected-info">
+                <el-alert type="success" :closable="false" show-icon>
+                  <template #default>
+                    <span>已自动识别: {{ parseResult.srs }}</span>
+                  </template>
+                </el-alert>
+              </div>
+
+              <div v-if="missingPrj" class="missing-prj-warning">
+                <el-alert type="warning" :closable="false" show-icon>
+                  <template #default>
+                    <span>请手动选择原始投影</span>
+                  </template>
+                </el-alert>
+                <el-form-item label="源坐标系" style="margin-top: 12px" :rules="sourceSrsRules">
+                  <el-select v-model="form.sourceSrs" style="width: 200px" placeholder="请选择">
+                    <el-option label="CGCS2000 (EPSG:4490)" value="EPSG:4490" />
+                    <el-option label="WGS84 (EPSG:4326)" value="EPSG:4326" />
+                    <el-option label="Web墨卡托 (EPSG:3857)" value="EPSG:3857" />
+                    <el-option label="北京54 (EPSG:2433)" value="EPSG:2433" />
+                    <el-option label="西安80 (EPSG:2443)" value="EPSG:2443" />
+                  </el-select>
+                </el-form-item>
+              </div>
             </div>
 
             <div v-if="parseResult && parseResult.success" class="parse-result">
@@ -249,7 +275,7 @@
           v-if="form.type === 'vector'"
           type="primary"
           :loading="importLoading"
-          :disabled="!uploadFile"
+          :disabled="!uploadFile || (missingPrj && !form.sourceSrs)"
           @click="handleImport"
         >
           导入并创建
@@ -309,7 +335,8 @@ const form = reactive<Dataset>({
   name: '',
   description: '',
   type: 'vector',
-  srs: 'EPSG:4326'
+  srs: 'EPSG:4326',
+  sourceSrs: ''
 })
 
 const formRef = ref<FormInstance>()
@@ -327,6 +354,24 @@ const importLoading = ref(false)
 const rasterUploadRef = ref<UploadInstance>()
 const rasterFile = ref<File | null>(null)
 const rasterUploadLoading = ref(false)
+
+const isShapefile = computed(() => {
+  if (!uploadFile.value) return false
+  const name = uploadFile.value.name.toLowerCase()
+  return name.endsWith('.shp') || name.endsWith('.zip')
+})
+
+const isCrsDetected = computed(() => parseResult.value?.crsDetected !== false)
+
+const missingPrj = computed(() => {
+  if (!isShapefile.value) return false
+  return !isCrsDetected.value
+})
+
+const sourceSrsRules = computed(() => {
+  if (!missingPrj.value) return []
+  return [{ required: true, message: '请选择源坐标系', trigger: 'change' }]
+})
 
 const fetchDatasets = async () => {
   loading.value = true
@@ -381,6 +426,7 @@ const handleCreate = () => {
   form.description = ''
   form.type = 'vector'
   form.srs = 'EPSG:4326'
+  form.sourceSrs = ''
   currentId.value = undefined
   uploadFile.value = null
   parseResult.value = null
@@ -397,6 +443,7 @@ const handleEdit = (row: Dataset) => {
   form.description = row.description || ''
   form.type = row.type || 'vector'
   form.srs = row.srs || 'EPSG:4326'
+  form.sourceSrs = ''
   uploadFile.value = null
   parseResult.value = null
   rasterFile.value = null
@@ -469,6 +516,7 @@ const handleExport = async (row: Dataset, format: string) => {
       geojson: 'geojson',
       kml: 'kml',
       shapefile: 'shp.zip',
+      csv: 'csv',
       geotiff: 'tiff'
     }
     link.download = `${row.name}.${extMap[format] || format}`
@@ -487,6 +535,7 @@ const handleDialogClose = () => {
   parseResult.value = null
   rasterFile.value = null
   hasExistingFile.value = false
+  form.sourceSrs = ''
 }
 
 const handleFileChange = async (file: any) => {
@@ -602,7 +651,8 @@ const handleImport = async () => {
         uploadFile.value,
         form.name,
         form.description,
-        form.srs
+        form.srs,
+        form.sourceSrs || undefined
       )
 
       if (res.data.success) {
@@ -696,6 +746,14 @@ onMounted(() => {
         margin: 5px 0;
       }
     }
+  }
+
+  .missing-prj-warning {
+    margin-top: 12px;
+  }
+
+  .crs-detected-info {
+    margin-top: 12px;
   }
 }
 </style>

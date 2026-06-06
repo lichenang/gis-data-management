@@ -139,6 +139,8 @@ license:
 
 # MyBatis-Plus 配置
 mybatis-plus:
+  configration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   # 配置扫描通用枚举
   type-enums-package: com.gisplatform.common.enums
   configuration:
@@ -174,6 +176,12 @@ logging:
     root: INFO
     com.gisplatform: DEBUG
     org.springframework.security: DEBUG
+    # MyBatis 的 SQL 调试日志
+    com.gisplatform.mapper: DEBUG
+    # Service 层日志
+    com.gisplatform.service: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+

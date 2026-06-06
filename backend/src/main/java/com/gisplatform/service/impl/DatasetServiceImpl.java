@@ -14,16 +14,8 @@ import com.gisplatform.mapper.DatasetMapper;
 import com.gisplatform.security.CurrentUserUtils;
 import com.gisplatform.service.DatasetService;
 import com.gisplatform.service.GisDataParserService;
+import com.gisplatform.service.MultiFormatImportService;
 import com.gisplatform.util.ExportUtil;
-import org.geotools.api.data.DataStore;
-import org.geotools.api.data.DataStoreFinder;
-import org.geotools.api.data.SimpleFeatureSource;
-import org.geotools.api.data.SimpleFeatureStore;
-import org.geotools.api.feature.simple.SimpleFeature;
-import org.geotools.api.feature.simple.SimpleFeatureType;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.shapefile.ShapefileDataStore;
-import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -47,6 +39,9 @@ public class DatasetServiceImpl extends ServiceImpl<DatasetMapper, Dataset> impl
 
     @Autowired
     private GisDataParserService gisDataParserService;
+
+    @Autowired
+    private MultiFormatImportService multiFormatImportService;
 
     @Autowired
     private CurrentUserUtils currentUserUtils;
@@ -139,12 +134,12 @@ public class DatasetServiceImpl extends ServiceImpl<DatasetMapper, Dataset> impl
 
     @Override
     public GisDataParseResult parseUploadFile(MultipartFile file, String fileName) {
-        return gisDataParserService.parseFile(file, fileName);
+        return multiFormatImportService.parseFile(file, fileName);
     }
 
     @Override
-    public DatasetImportResult importDataset(MultipartFile file, String fileName, String name, String description, String type, String srs) {
-        DatasetImportResult result = gisDataParserService.importToPostGIS(file, fileName, name, srs);
+    public DatasetImportResult importDataset(MultipartFile file, String fileName, String name, String description, String type, String srs, String sourceSrs) {
+        DatasetImportResult result = multiFormatImportService.importToPostGIS(file, fileName, name, srs, sourceSrs);
         if (result.isSuccess() && description != null && !description.isEmpty()) {
             Dataset dataset = this.getById(result.getDatasetId());
             if (dataset != null) {
@@ -242,7 +237,7 @@ public class DatasetServiceImpl extends ServiceImpl<DatasetMapper, Dataset> impl
     }
 
     @Override
-    public void exportShapefileAsZip(Long id, OutputStream outputStream) {
+    public String getDatasetAsCsv(Long id) {
         Dataset dataset = this.getById(id);
         if (dataset == null || dataset.getDeleted() == 1) {
             throw BusinessException.notFound("数据集不存在");
@@ -253,46 +248,49 @@ public class DatasetServiceImpl extends ServiceImpl<DatasetMapper, Dataset> impl
             throw BusinessException.badRequest("该数据集未导入空间数据，无法导出");
         }
 
-        Path tempDir = null;
-        try {
-            tempDir = Files.createTempDirectory("shp_export_");
-            String baseName = ExportUtil.sanitizeFilename(dataset.getName());
-
-            DataSource ds = jdbcTemplate.getDataSource();
-            Map<String, Object> pgParams = new HashMap<>();
-            pgParams.put("dbtype", "postgis");
-            pgParams.put("datasource", ds);
-            pgParams.put("schema", dbSchema);
-
-            DataStore pgStore = DataStoreFinder.getDataStore(pgParams);
-            SimpleFeatureSource source = pgStore.getFeatureSource(tableName);
-            SimpleFeatureType schema = source.getSchema();
-
-            File shpFile = new File(tempDir.toFile(), baseName + ".shp");
-            Map<String, Serializable> shpParams = new HashMap<>();
-            shpParams.put("url", shpFile.toURI().toURL());
-            shpParams.put("create spatial index", true);
-
-            ShapefileDataStoreFactory shpFactory = new ShapefileDataStoreFactory();
-            ShapefileDataStore shpStore = (ShapefileDataStore) shpFactory.createNewDataStore(shpParams);
-            shpStore.createSchema(schema);
-
-            List<SimpleFeature> features = DataUtilities.list(source.getFeatures());
-            String typeName = shpStore.getTypeNames()[0];
-            ((SimpleFeatureStore) shpStore.getFeatureSource(typeName))
-                    .addFeatures(DataUtilities.collection(features));
-
-            File[] files = tempDir.toFile().listFiles();
-            if (files != null) {
-                ExportUtil.zipFiles(files, baseName, outputStream);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Shapefile 导出失败: " + e.getMessage(), e);
-        } finally {
-            if (tempDir != null) {
-                ExportUtil.deleteDirectory(tempDir.toFile());
-            }
+        String columnsSql = "SELECT column_name FROM information_schema.columns " +
+                "WHERE table_schema = '" + dbSchema + "' AND table_name = '" + tableName + "' " +
+                "AND column_name NOT IN ('id', 'geometry') ORDER BY ordinal_position";
+        List<Map<String, Object>> columnRows = jdbcTemplate.queryForList(columnsSql);
+        
+        List<String> columnNames = new ArrayList<>();
+        columnNames.add("id");
+        for (Map<String, Object> row : columnRows) {
+            columnNames.add(row.get("column_name").toString());
         }
+        columnNames.add("geometry");
+        
+        StringBuilder csv = new StringBuilder();
+        csv.append(String.join(",", columnNames)).append("\n");
+        
+        String dataSql = "SELECT id, ST_AsText(geometry) as geometry";
+        for (Map<String, Object> row : columnRows) {
+            dataSql += ", \"" + row.get("column_name").toString() + "\"";
+        }
+        dataSql += " FROM \"" + dbSchema + "\".\"" + tableName + "\"";
+        
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(dataSql);
+        
+        for (Map<String, Object> row : rows) {
+            List<String> values = new ArrayList<>();
+            for (String col : columnNames) {
+                Object value = row.get(col);
+                String strValue = value != null ? value.toString() : "";
+                strValue = strValue.replace("\"", "\"\"");
+                if (strValue.contains(",") || strValue.contains("\n") || strValue.contains("\"")) {
+                    strValue = "\"" + strValue + "\"";
+                }
+                values.add(strValue);
+            }
+            csv.append(String.join(",", values)).append("\n");
+        }
+        
+        return csv.toString();
+    }
+
+    @Override
+    public void exportShapefileAsZip(Long id, OutputStream outputStream) {
+        throw new BusinessException(501, "Shapefile 导出功能暂不可用，请使用 GeoJSON 格式导出");
     }
 
     @Deprecated

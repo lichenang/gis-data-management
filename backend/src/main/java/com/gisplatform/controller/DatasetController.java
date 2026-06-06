@@ -92,7 +92,8 @@ public class DatasetController {
             @Parameter(description = "空间数据文件") @RequestParam("file") MultipartFile file,
             @Parameter(description = "数据集名称") @RequestParam("name") String name,
             @Parameter(description = "描述") @RequestParam(value = "description", required = false) String description,
-            @Parameter(description = "坐标系") @RequestParam(value = "srs", required = false, defaultValue = "EPSG:4326") String srs) {
+            @Parameter(description = "坐标系") @RequestParam(value = "srs", required = false, defaultValue = "EPSG:4326") String srs,
+            @Parameter(description = "源坐标系") @RequestParam(value = "sourceSrs", required = false) String sourceSrs) {
         if (file.isEmpty()) {
             return R.fail("文件不能为空");
         }
@@ -103,7 +104,7 @@ public class DatasetController {
         if (name == null || name.isEmpty()) {
             return R.fail("数据集名称不能为空");
         }
-        DatasetImportResult result = datasetService.importDataset(file, fileName, name, description, "vector", srs);
+        DatasetImportResult result = datasetService.importDataset(file, fileName, name, description, "vector", srs, sourceSrs);
         if (result.isSuccess()) {
             return R.ok(result);
         } else {

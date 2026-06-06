@@ -67,6 +67,8 @@ public class ExportController {
                     exportShapefile(dataset, response);
                 } else if ("kml".equals(format)) {
                     exportKml(dataset, response);
+                } else if ("csv".equals(format)) {
+                    exportCsv(dataset, response);
                 } else {
                     writeErrorJson(response, 400, "不支持的导出格式: " + format);
                 }
@@ -116,6 +118,17 @@ public class ExportController {
         try (OutputStream os = response.getOutputStream()) {
             datasetService.exportShapefileAsZip(dataset.getId(), os);
         }
+    }
+
+    private void exportCsv(Dataset dataset, HttpServletResponse response) throws Exception {
+        String csv = datasetService.getDatasetAsCsv(dataset.getId());
+        String filename = ExportUtil.sanitizeFilename(dataset.getName()) + ".csv";
+
+        response.setContentType("text/csv;charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" +
+                URLEncoder.encode(filename, StandardCharsets.UTF_8) + "\"");
+        response.getWriter().write("\uFEFF");
+        response.getWriter().write(csv);
     }
 
     private void exportGeoTiff(Dataset dataset, HttpServletResponse response) throws Exception {

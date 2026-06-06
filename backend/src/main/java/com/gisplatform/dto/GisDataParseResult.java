@@ -19,6 +19,12 @@ public class GisDataParseResult {
 
     private String tableName;
 
+    private String format;
+
+    private java.util.List<String> properties;
+
+    private boolean crsDetected;
+
     public static GisDataParseResult success(String message) {
         GisDataParseResult result = new GisDataParseResult();
         result.setSuccess(true);

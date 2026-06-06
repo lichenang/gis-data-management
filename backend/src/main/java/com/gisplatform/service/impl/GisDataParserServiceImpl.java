@@ -34,7 +34,7 @@ public class GisDataParserServiceImpl implements GisDataParserService {
     private static final Logger logger = LoggerFactory.getLogger(GisDataParserServiceImpl.class);
 
     private static final String[] SUPPORTED_FORMATS = {
-        "shp", "geojson", "json"
+        "shp", "zip", "geojson", "json"
     };
 
     @Autowired

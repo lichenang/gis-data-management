@@ -24,13 +24,15 @@ public interface DatasetService extends IService<Dataset> {
 
     GisDataParseResult parseUploadFile(MultipartFile file, String fileName);
 
-    DatasetImportResult importDataset(MultipartFile file, String fileName, String name, String description, String type, String srs);
+    DatasetImportResult importDataset(MultipartFile file, String fileName, String name, String description, String type, String srs, String sourceSrs);
 
     List<Dataset> listPublishedDatasets();
 
     String getDatasetAsGeoJSON(Long id);
 
     String getDatasetAsKML(Long id);
+
+    String getDatasetAsCsv(Long id);
 
     void exportShapefileAsZip(Long id, OutputStream outputStream);
 

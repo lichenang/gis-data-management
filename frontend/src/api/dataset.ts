@@ -34,6 +34,7 @@ export interface GisDataParseResult {
   message: string
   geometryType?: string
   srs?: string
+  crsDetected?: boolean
   featureCount?: number
   bounds?: number[]
   tableName?: string
@@ -78,7 +79,7 @@ export function parseDatasetFile(file: File) {
   return upload<{ code: number; data: GisDataParseResult }>('/datasets/parse', formData)
 }
 
-export function importDataset(file: File, name: string, description?: string, srs?: string) {
+export function importDataset(file: File, name: string, description?: string, srs?: string, sourceSrs?: string) {
   const formData = new FormData()
   formData.append('file', file)
   formData.append('name', name)
@@ -87,6 +88,9 @@ export function importDataset(file: File, name: string, description?: string, sr
   }
   if (srs) {
     formData.append('srs', srs)
+  }
+  if (sourceSrs) {
+    formData.append('sourceSrs', sourceSrs)
   }
   return upload<{ code: number; data: DatasetImportResult }>('/datasets/import', formData)
 }
